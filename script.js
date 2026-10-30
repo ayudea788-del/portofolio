@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function applyTheme(theme) {
     root.setAttribute("data-theme", theme);
     var isDark = theme === "dark";
-    themeIcon.textContent = isDark ? "☀️" : "🌙";
+    themeIcon.textContent = isDark ? "\u2600\uFE0F" : "\uD83C\uDF19";
     themeToggle.setAttribute("aria-pressed", String(isDark));
     themeToggle.setAttribute(
       "aria-label",

@@ -461,7 +461,7 @@ a {
 table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 380px;
+  min-width: 460px;
 }
 
 th,
@@ -565,6 +565,14 @@ tbody tr:hover {
   justify-content: center;
   height: 150px;
   font-size: 3.2rem;
+  overflow: hidden;
+}
+
+/* Foto di dalam kartu project: tampil penuh, tidak terpotong */
+.project-thumb img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
 }
 
 .thumb-1 {
@@ -573,8 +581,10 @@ tbody tr:hover {
 .thumb-2 {
   background: linear-gradient(135deg, #0f9b8e, #6fd6b8);
 }
+/* Kotak BananaBos mengikuti tinggi gambar */
 .thumb-3 {
-  background: linear-gradient(135deg, #d9632b, #f2a65a);
+  height: auto;
+  background: #fdf6e7;
 }
 
 .card-body {
@@ -773,6 +783,7 @@ textarea.invalid {
   .contact-inner > * {
     width: 100%;
     flex: 0 0 auto;
+    max-width: none;
   }
 }
 
