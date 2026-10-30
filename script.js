@@ -1,7 +1,7 @@
 /* ==========================================================
    script.js - Portfolio Dea Ayu Riska Amalia
    Fitur: Dark Mode, Menu Mobile, Menu Aktif, Progress Bar Skill,
-          Validasi Form, Pesan Berhasil, Tampilan Data Form
+          Validasi Form, Kirim ke Email, Tampilan Data Form
    ========================================================== */
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -178,8 +178,12 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   /* ---------------------------------------------------------
-     7. VALIDASI FORM KONTAK
+     7. FORM KONTAK: VALIDASI + KIRIM KE EMAIL
      --------------------------------------------------------- */
+
+  /* >>> EMAIL TUJUAN (pesan dari form masuk ke sini) <<< */
+  var EMAIL_TUJUAN = "ayudea788@gmail.com";
+
   var form = document.getElementById("formKontak");
   var inputNama = document.getElementById("nama");
   var inputEmail = document.getElementById("email");
@@ -278,18 +282,58 @@ document.addEventListener("DOMContentLoaded", function () {
     var email = inputEmail.value.trim();
     var pesan = inputPesan.value.trim();
 
-    /* Pesan berhasil */
-    pesanBerhasil.textContent =
-      "Terima kasih, " + nama + "! Pesan Anda berhasil dikirim.";
-    pesanBerhasil.hidden = false;
+    /* Nonaktifkan tombol selama proses kirim */
+    var tombol = form.querySelector("button[type=submit]");
+    tombol.disabled = true;
+    tombol.textContent = "Mengirim...";
+    pesanBerhasil.hidden = true;
+    hasilKirim.hidden = true;
 
-    /* Tampilkan data form di bawah form (textContent = aman dari injeksi HTML) */
-    document.getElementById("hasilNama").textContent = nama;
-    document.getElementById("hasilEmail").textContent = email;
-    document.getElementById("hasilPesan").textContent = pesan;
-    hasilKirim.hidden = false;
+    fetch("https://formsubmit.co/ajax/" + EMAIL_TUJUAN, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        nama: nama,
+        email: email,
+        pesan: pesan,
+        _subject: "Pesan baru dari portfolio",
+        _replyto: email,
+        _captcha: "false",
+        _template: "table",
+      }),
+    })
+      .then(function (res) {
+        if (!res.ok) throw new Error("Gagal mengirim");
+        return res.json();
+      })
+      .then(function () {
+        /* Pesan berhasil */
+        pesanBerhasil.classList.remove("alert-error");
+        pesanBerhasil.textContent =
+          "Terima kasih, " + nama + "! Pesan Anda berhasil dikirim.";
+        pesanBerhasil.hidden = false;
 
-    form.reset();
+        /* Tampilkan data form (textContent = aman dari injeksi HTML) */
+        document.getElementById("hasilNama").textContent = nama;
+        document.getElementById("hasilEmail").textContent = email;
+        document.getElementById("hasilPesan").textContent = pesan;
+        hasilKirim.hidden = false;
+
+        form.reset();
+      })
+      .catch(function () {
+        pesanBerhasil.classList.add("alert-error");
+        pesanBerhasil.textContent =
+          "Maaf, pesan gagal dikirim. Silakan coba lagi.";
+        pesanBerhasil.hidden = false;
+      })
+      .then(function () {
+        tombol.disabled = false;
+        tombol.textContent = "Kirim";
+      });
   });
 
   /* ---------------------------------------------------------
